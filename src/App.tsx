@@ -164,6 +164,7 @@ export default function App() {
           </main>
         </div>
       </div>
-    </DataProvider>
+    </div>
+  </DataProvider>
   );
 }
