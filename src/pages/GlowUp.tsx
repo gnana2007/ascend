@@ -1,9 +1,28 @@
 import { Camera, Check, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { glowHabits } from "@/data/mock";
+import { useData } from "@/contexts/DataContext";
+
+const glowHabits = [
+  "Cleanser",
+  "Moisturizer",
+  "Sunscreen",
+  "Lip care",
+  "Hair oiling",
+  "Scalp massage",
+  "Silk pillowcase"
+];
 
 export function GlowUp() {
+  const { dashboardData, loading } = useData();
+
+  if (loading || !dashboardData) {
+    return <div className="flex items-center justify-center py-20">Loading glow-up data...</div>;
+  }
+
+  const totals = dashboardData.totals || {};
+  const skincareLogs = (totals.skincare || 0) + (totals.haircare || 0);
+
   return (
     <div className="space-y-5">
       <Card className="p-6">
@@ -11,6 +30,7 @@ export function GlowUp() {
           <div>
             <p className="text-sm font-black uppercase tracking-[0.25em] text-ink/45 dark:text-white/45">Glow-Up Tracker</p>
             <h2 className="mt-2 text-3xl font-black">Skincare, haircare, and visible confidence.</h2>
+            <p className="mt-2 text-sm font-semibold text-ink/60 dark:text-white/60">Total care sessions: {skincareLogs}</p>
           </div>
           <Button><Camera size={18} /> Add Progress Photo</Button>
         </div>
@@ -28,7 +48,7 @@ export function GlowUp() {
           </div>
         </Card>
         <Card>
-          <h3 className="text-xl font-black">Before / After Gallery</h3>
+          <h3 className="text-xl font-black">Progress Milestones</h3>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             {["Week 1", "Week 4", "Week 8"].map((label, index) => (
               <div key={label} className="aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-br from-sage/50 via-lilac/40 to-coral/40 p-4">

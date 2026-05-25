@@ -2,24 +2,38 @@ import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { Bell, Moon, Sunrise } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ProgressRing } from "@/components/ui/progress-ring";
-import { sleepPlan, weeklyFocus } from "@/data/mock";
+import { useData } from "@/contexts/DataContext";
 
 export function Sleep() {
+  const { dashboardData, loading } = useData();
+
+  if (loading || !dashboardData) {
+    return <div className="flex items-center justify-center py-20">Loading sleep data...</div>;
+  }
+
+  const weeklyFocus = dashboardData.weeklyFocus || [];
+  const totals = dashboardData.totals || {};
+  const avgSleep = totals.sleep ? (totals.sleep / 7).toFixed(1) : "0";
+  const sleepQuality = Math.min(totals.sleep ? (totals.sleep * 10) : 60, 95);
+
   return (
     <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
       <Card className="grid place-items-center p-8">
-        <ProgressRing value={82} label="Energy Score" color="#a5b4fc" size={170} />
-        <p className="mt-4 max-w-sm text-center leading-7 text-ink/65 dark:text-white/65">Your split sleep plan is stable. Keep caffeine before 3 PM and begin wind-down 45 minutes earlier on coding-heavy days.</p>
+        <ProgressRing value={sleepQuality} label="Sleep Score" color="#a5b4fc" size={170} />
+        <p className="mt-4 max-w-sm text-center leading-7 text-ink/65 dark:text-white/65">Your sleep patterns show consistency. Keep maintaining your sleep routine for better focus and wellness.</p>
       </Card>
       <Card>
         <h2 className="text-3xl font-black">Sleep Tracker</h2>
         <div className="mt-5 grid gap-4 md:grid-cols-3">
-          {sleepPlan.map((item) => (
+          {[
+            { label: "Avg Sleep", value: avgSleep + "h" },
+            { label: "This Week", value: (totals.sleep || 0) + " logs" },
+            { label: "Sleep Quality", value: Math.round(sleepQuality) + "%" }
+          ].map((item) => (
             <div key={item.label} className="rounded-2xl bg-white/50 p-4 dark:bg-white/10">
               <Moon size={19} />
               <p className="mt-3 font-black">{item.label}</p>
-              <p className="text-sm font-semibold text-ink/55 dark:text-white/55">{item.time}</p>
-              <p className="mt-2 text-2xl font-black">{item.quality}%</p>
+              <p className="mt-2 text-2xl font-black">{item.value}</p>
             </div>
           ))}
         </div>

@@ -1,13 +1,30 @@
 import { Pause, Play, Wind } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { routines } from "@/data/mock";
+import { useData } from "@/contexts/DataContext";
+
+const routines = [
+  { name: "Morning Mobility", length: "12 min", focus: "Posture and neck release" },
+  { name: "Exam Calm Flow", length: "18 min", focus: "Breath, hips, hamstrings" },
+  { name: "Desk Reset", length: "7 min", focus: "Wrists, shoulders, spine" },
+  { name: "Sleepy Stretch", length: "10 min", focus: "Slow exhale and recovery" }
+];
 
 export function Wellness() {
+  const { dashboardData, loading } = useData();
+
+  if (loading || !dashboardData) {
+    return <div className="flex items-center justify-center py-20">Loading wellness data...</div>;
+  }
+
+  const totals = dashboardData.totals || {};
+  const wellnessScore = dashboardData.modules?.wellness || 0;
+
   return (
     <div className="grid gap-5 xl:grid-cols-[1fr_0.8fr]">
       <Card className="p-6">
         <h2 className="text-3xl font-black">Yoga, breath, posture, and calm focus.</h2>
+        <p className="mt-2 text-sm font-semibold text-ink/60 dark:text-white/60">Wellness Score: {wellnessScore}%</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {routines.map((routine) => (
             <div key={routine.name} className="rounded-2xl bg-white/50 p-4 dark:bg-white/10">

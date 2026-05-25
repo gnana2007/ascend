@@ -3,9 +3,19 @@ import { Bot, Brain, Clock3, ShieldOff, TimerReset } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heatmap } from "@/components/Heatmap";
-import { studyTracks, weeklyFocus } from "@/data/mock";
+import { useData } from "@/contexts/DataContext";
 
 export function Study() {
+  const { dashboardData, loading } = useData();
+
+  if (loading || !dashboardData) {
+    return <div className="flex items-center justify-center py-20">Loading study data...</div>;
+  }
+
+  const weeklyFocus = dashboardData.weeklyFocus || [];
+  const totals = dashboardData.totals || {};
+  const studyHours = (totals.study || 0) / 60;
+
   return (
     <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
       <Card className="p-6">
@@ -18,8 +28,8 @@ export function Study() {
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           {[
-            ["Hours Today", "4.2", Clock3],
-            ["Study Streak", "12 days", Brain],
+            ["Hours This Week", studyHours.toFixed(1), Clock3],
+            ["Study Entries", totals.study || 0, Brain],
             ["Focus Shield", "On", ShieldOff]
           ].map(([label, value, Icon]) => (
             <div key={label as string} className="rounded-2xl bg-white/50 p-4 dark:bg-white/10">
@@ -42,9 +52,13 @@ export function Study() {
 
       <div className="space-y-5">
         <Card>
-          <h3 className="text-xl font-black">Roadmap Trackers</h3>
+          <h3 className="text-xl font-black">Active Tracks</h3>
           <div className="mt-4 space-y-4">
-            {studyTracks.map((track) => (
+            {[
+              { name: "DSA & Algorithms", complete: 65 },
+              { name: "Career Roadmap", complete: 50 },
+              { name: "System Design", complete: 45 }
+            ].map((track) => (
               <div key={track.name}>
                 <div className="flex justify-between text-sm font-bold">
                   <span>{track.name}</span>
@@ -53,7 +67,6 @@ export function Study() {
                 <div className="mt-2 h-3 overflow-hidden rounded-full bg-ink/10 dark:bg-white/10">
                   <div className="h-full rounded-full bg-gradient-to-r from-sage to-lilac" style={{ width: `${track.complete}%` }} />
                 </div>
-                <p className="mt-1 text-xs font-semibold text-ink/50 dark:text-white/50">{track.note}</p>
               </div>
             ))}
           </div>
@@ -63,7 +76,7 @@ export function Study() {
             <Bot size={19} />
             <h3 className="text-xl font-black">AI Study Suggestion</h3>
           </div>
-          <p className="leading-7 text-ink/68 dark:text-white/68">Do one graph problem, revise REST auth notes, then spend 20 minutes on mock interview storytelling. Your weak area is not ability; it is spaced recall.</p>
+          <p className="leading-7 text-ink/68 dark:text-white/68">Based on your study patterns, focus on one deep topic at a time. Your consistency matters more than cramming.</p>
         </Card>
         <Card>
           <h3 className="mb-4 text-xl font-black">Focus Heatmap</h3>
