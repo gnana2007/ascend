@@ -1,3 +1,4 @@
+
 import { useMemo, useState } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Navigate } from "react-router-dom";
@@ -34,6 +35,7 @@ import {
   X,
 } from "lucide-react";
 
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,6 +44,7 @@ import { Mascot } from "@/components/Mascot";
 import { DataProvider } from "@/contexts/DataContext";
 
 import { mascots } from "@/data/mock";
+
 
 import { Dashboard } from "@/pages/Dashboard";
 import { Study } from "@/pages/Study";
@@ -54,6 +57,7 @@ import { Coach } from "@/pages/Coach";
 import { Profile } from "@/pages/Profile";
 import { Auth } from "@/pages/Auth";
 import { SettingsPage } from "@/pages/SettingsPage";
+
 
 import { cn } from "@/lib/utils";
 
